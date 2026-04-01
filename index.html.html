@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oleksii Alekhneiko — Mietkoch & Postenchef</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a08;
+    --dark: #111110;
+    --card: #191917;
+    --border: #2a2a26;
+    --gold: #c9973a;
+    --gold-light: #e8b95a;
+    --cream: #f0ebe0;
+    --muted: #7a7a70;
+    --white: #f5f2ec;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(10,10,8,0.95), transparent);
+    backdrop-filter: blur(2px);
+    transition: background 0.4s;
+  }
+  nav.scrolled { background: rgba(10,10,8,0.97); border-bottom: 1px solid var(--border); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--gold); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 13px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--gold); color: var(--black);
+    padding: 10px 24px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 50%, rgba(201,151,58,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(201,151,58,0.05) 0%, transparent 50%),
+      var(--black);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: 0.25;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; padding: 0 24px;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 110px);
+    font-weight: 300; line-height: 0.92;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--muted); font-weight: 300; font-style: italic;
+    margin-bottom: 40px;
+  }
+  .hero-stats {
+    display: flex; gap: 48px; justify-content: center;
+    margin-bottom: 52px; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300; color: var(--gold-light);
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px; }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--black);
+    padding: 14px 36px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    border: 1px solid var(--border); color: var(--white);
+    padding: 14px 36px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%;
+    transform: translateX(-50%); z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .scroll-hint span { font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 100px 0; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 48px; }
+  .section-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300; line-height: 1.05;
+    color: var(--white); margin-bottom: 60px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .divider {
+    width: 60px; height: 1px;
+    background: var(--gold); margin: 24px 0 48px;
+  }
+
+  /* ─── PROFIL ─── */
+  #profil { background: var(--dark); }
+  .profil-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
+  .profil-left { }
+  .profil-text {
+    font-size: 16px; line-height: 1.8; color: #a0a098;
+    margin-bottom: 32px;
+  }
+  .profil-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+  .tag {
+    border: 1px solid var(--border);
+    padding: 7px 16px; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .tag:hover { border-color: var(--gold); color: var(--gold-light); }
+  .contact-block { margin-top: 40px; display: flex; flex-direction: column; gap: 14px; }
+  .contact-item { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--muted); }
+  .contact-item strong { color: var(--white); }
+  .contact-icon { width: 36px; height: 36px; border: 1px solid var(--border); display: grid; place-items: center; font-size: 14px; flex-shrink: 0; }
+  .profil-right { }
+  .info-cards { display: flex; flex-direction: column; gap: 2px; }
+  .info-card {
+    background: var(--card);
+    border-left: 3px solid transparent;
+    padding: 20px 24px;
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .info-card:hover { border-left-color: var(--gold); }
+  .info-card-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .info-card-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .info-card-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ─── SKILLS ─── */
+  #skills { background: var(--black); }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .skill-card {
+    background: var(--card); padding: 36px 28px;
+    transition: transform 0.3s; cursor: default;
+    position: relative; overflow: hidden;
+  }
+  .skill-card::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold); transform: scaleX(0);
+    transform-origin: left; transition: transform 0.3s;
+  }
+  .skill-card:hover::after { transform: scaleX(1); }
+  .skill-card:hover { transform: translateY(-4px); }
+  .skill-icon { font-size: 28px; margin-bottom: 16px; }
+  .skill-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--white); margin-bottom: 10px; }
+  .skill-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+  /* ─── ERFAHRUNG ─── */
+  #erfahrung { background: var(--dark); }
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: var(--border); }
+  .timeline-item {
+    position: relative; margin-bottom: 48px;
+    padding-left: 28px;
+    animation: fadeUp 0.6s both;
+  }
+  .timeline-item::before {
+    content: ''; position: absolute;
+    left: -36px; top: 8px;
+    width: 10px; height: 10px;
+    border: 1px solid var(--gold); background: var(--black);
+    transition: background 0.2s;
+  }
+  .timeline-item:hover::before { background: var(--gold); }
+  .timeline-period { font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+  .timeline-company { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--white); }
+  .timeline-role { font-size: 13px; color: var(--muted); margin: 4px 0 12px; }
+  .timeline-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .timeline-bullets li { font-size: 13px; color: #7a7a70; padding-left: 16px; position: relative; line-height: 1.6; }
+  .timeline-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 10px; top: 2px; }
+
+  /* ─── SPRACHEN ─── */
+  .lang-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 60px; }
+  .lang-card { background: var(--card); padding: 24px 20px; text-align: center; }
+  .lang-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--white); margin-bottom: 8px; }
+  .lang-level { font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; }
+  .lang-bar { height: 2px; background: var(--border); margin-top: 16px; position: relative; }
+  .lang-fill { height: 100%; background: var(--gold); }
+
+  /* ─── BOOKING ─── */
+  #buchen {
+    background: var(--dark);
+    position: relative; overflow: hidden;
+  }
+  #buchen::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,151,58,0.07), transparent 60%);
+    pointer-events: none;
+  }
+  .booking-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; align-items: start; }
+  .booking-info { }
+  .booking-usp { display: flex; flex-direction: column; gap: 24px; margin-top: 40px; }
+  .usp-item { display: flex; gap: 16px; align-items: flex-start; }
+  .usp-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; color: var(--border);
+    line-height: 1; flex-shrink: 0; min-width: 36px;
+  }
+  .usp-text-title { font-size: 14px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+  .usp-text-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .booking-form { }
+  .form-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 44px;
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300;
+    color: var(--white); margin-bottom: 32px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .form-group label { font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: var(--dark); border: 1px solid var(--border);
+    color: var(--white); padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300;
+    outline: none; transition: border-color 0.2s; width: 100%;
+    appearance: none;
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: #3a3a36; }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--gold); }
+  .form-group select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9973a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+  .form-group select option { background: var(--dark); }
+  .form-group textarea { resize: vertical; min-height: 110px; }
+  .form-submit {
+    width: 100%; background: var(--gold); color: var(--black);
+    border: none; padding: 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--gold-light); }
+  .form-submit:active { transform: scale(0.99); }
+  .form-note { font-size: 11px; color: var(--muted); margin-top: 14px; text-align: center; line-height: 1.6; }
+
+  /* SUCCESS STATE */
+  .success-box {
+    display: none;
+    text-align: center; padding: 48px 0;
+  }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold); margin-bottom: 12px; }
+  .success-text { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 24px;
+  }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold); }
+  .footer-text { font-size: 12px; color: var(--muted); }
+  .footer-contact { font-size: 13px; color: var(--muted); }
+  .footer-contact a { color: var(--gold); text-decoration: none; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .container { padding: 0 24px; }
+    section { padding: 72px 0; }
+    .profil-grid, .booking-grid { grid-template-columns: 1fr; gap: 48px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .lang-grid { grid-template-columns: repeat(3, 1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    .form-box { padding: 28px 20px; }
+  }
+  @media (max-width: 600px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    .lang-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">O. Alekhneiko</a>
+  <ul class="nav-links">
+    <li><a href="#profil">Profil</a></li>
+    <li><a href="#skills">Küche</a></li>
+    <li><a href="#erfahrung">Erfahrung</a></li>
+    <li><a href="#buchen">Anfrage</a></li>
+  </ul>
+  <a href="#buchen" class="nav-cta">Jetzt anfragen</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Mietkoch · Postenchef · Koch auf Anfrage</p>
+    <h1 class="hero-title">Oleksii<br><em>Alekhneiko</em></h1>
+    <p class="hero-subtitle">Internationale Gastronomieerfahrung. Bereit für Ihren Einsatz.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">15+</div>
+        <div class="stat-label">Jahre Erfahrung</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Länder</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Gäste Buffet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Sprachen</div>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#buchen" class="btn-primary">Einsatz anfragen</a>
+      <a href="#erfahrung" class="btn-outline">Erfahrungen</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scrollen</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROFIL -->
+<section id="profil">
+  <div class="container">
+    <div class="profil-grid">
+      <div class="profil-left reveal">
+        <p class="section-label">Kurzprofil</p>
+        <h2 class="section-title">Flexibel.<br><em>Erfahren.</em><br>Einsatzbereit.</h2>
+        <p class="profil-text">Koch mit über 15 Jahren internationaler Erfahrung in À-la-carte, Banketten und Eventgastronomie — in Deutschland, Polen und der Ukraine. Spezialist für warme Küche, Postenbetrieb und kurzfristige Verfügbarkeit.</p>
+        <p class="profil-text">Einsetzbar in Restaurants, Hotels, Catering-Betrieben und bei Vertretungen — zuverlässig, schnell einarbeitend, HACCP-konform.</p>
+        <div class="profil-tags">
+          <span class="tag">À-la-carte</span>
+          <span class="tag">Postenchef</span>
+          <span class="tag">Japanisch</span>
+          <span class="tag">Robata</span>
+          <span class="tag">Wok</span>
+          <span class="tag">HACCP</span>
+          <span class="tag">Buffet</span>
+          <span class="tag">Bayerisch</span>
+        </div>
+        <div class="contact-block" style="margin-top:40px">
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <span><strong>+49 1525 3418670</strong></span>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8aebe6efe1f9a4ebe6efe1e2a4b8bfcaede7ebe3e6a4e9e5e7">[email&#160;protected]</a></span>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <span>Langlingen, Niedersachsen — deutschlandweit einsatzbereit</span>
+          </div>
+        </div>
+      </div>
+      <div class="profil-right reveal">
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card-icon">⚡</div>
+            <div>
+              <div class="info-card-title">Kurzfristige Verfügbarkeit</div>
+              <div class="info-card-text">Tages-, Wochen- und Monatseinsätze auf Abruf. Flexibler Einsatz bei Urlaub, Krankheit oder Hochsaison.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🍽️</div>
+            <div>
+              <div class="info-card-title">Europäische & Asiatische Küche</div>
+              <div class="info-card-text">Spezialisiert auf warme Küche, bayerische Regionalküche, japanische Techniken, Robata-Grill und Wok.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🏨</div>
+            <div>
+              <div class="info-card-title">Restaurants · Hotels · Catering</div>
+              <div class="info-card-text">Erfahren in Gasthaus, Tagungszentrum und Eventgastronomie — zuletzt AOK BiTZ Sarstedt (200 Personen Buffet).</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">✅</div>
+            <div>
+              <div class="info-card-title">HACCP & Qualitätsstandards</div>
+              <div class="info-card-text">Vollständige Kenntnis und Einhaltung aller deutschen Lebensmittelhygiene- und HACCP-Vorschriften.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🌍</div>
+            <div>
+              <div class="info-card-title">Region & Mobilität</div>
+              <div class="info-card-text">Wohnhaft in Niedersachsen. Einsatz deutschlandweit — Schwerpunkt Niedersachsen, Berlin, Bayern.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <p class="section-label reveal">Fachkompetenzen</p>
+    <h2 class="section-title reveal">Was ich<br><em>beherrsche</em></h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-icon">🥩</div>
+        <div class="skill-title">Warme Küche & À-la-carte</div>
+        <div class="skill-desc">Eigenständige Führung des Postens im laufenden À-la-carte-Betrieb. Qualitätskontrolle unter Hochdruck.</div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🔥</div>
+        <div class="skill-title">Grill & Robata</div>
+        <div class="skill-desc">Spezialisierung auf japanischen Robata-Grill, offenes Feuer und klassisches Grillhandwerk mit Fleisch und Fisch.</div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🥢</div>
+        <div class="skill-title">Asiatisch & Japanisch</div>
+        <div class="skill-desc">Mehrjährige Erfahrung in japanischen Steakhäusern und Oriental Restaurants in Odessa. Wok, Sushi-Vorbereitung, Umami-Techniken.</div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🍺</div>
+        <div class="skill-title">Bayerische Regionalküche</div>
+        <div class="skill-desc">Postenchef im Gasthof Metzgerwirt Bad Bayersoien — traditionelle bayerische Küche in Saison und Hochbetrieb.</div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🎪</div>
+        <div class="skill-title">Buffet & Events</div>
+        <div class="skill-desc">Organisation und Ausgabe großer Buffets (bis 200 Personen). Tagungen, Firmenfeiern, Bankette.</div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">📋</div>
+        <div class="skill-title">Warenmanagement & HACCP</div>
+        <div class="skill-desc">Lagerverwaltung, Bestellwesen, Hygieneprotokolle. Einhaltung aller deutschen Lebensmittelvorschriften.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERFAHRUNG -->
+<section id="erfahrung">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
+      <div>
+        <p class="section-label reveal">Berufserfahrung</p>
+        <h2 class="section-title reveal">15 Jahre.<br><em>Drei Länder.</em></h2>
+        <div class="timeline reveal">
+          <div class="timeline-item">
+            <div class="timeline-period">10/2025 – 01/2026</div>
+            <div class="timeline-company">AOK Niedersachsen – BiTZ</div>
+            <div class="timeline-role">Koch Warme Küche · Sarstedt</div>
+            <ul class="timeline-bullets">
+              <li>Buffet-Vorbereitung und Ausgabe für 200 Personen</li>
+              <li>Postenverwaltung & Hygienekontrolle</li>
+            </ul>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">06/2025 – 10/2025</div>
+            <div class="timeline-company">Gasthof Allerparadies</div>
+            <div class="timeline-role">Koch Warme Küche · Langlingen</div>
+            <ul class="timeline-bullets">
+              <li>Eigenverantwortliche Tätigkeit in der warmen Küche</li>
+              <li>Reibungsloser Ablauf im Tagesgeschäft</li>
+            </ul>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">05/2024 – 11/2024</div>
+            <div class="timeline-company">Gasthof Metzgerwirt</div>
+            <div class="timeline-role">Postenchef · Bad Bayersoien</div>
+            <ul class="timeline-bullets">
+              <li>Führung des Postens im À-la-carte-Betrieb</li>
+              <li>Bayerische & internationale Küche</li>
+              <li>Warenmanagement & HACCP</li>
+            </ul>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">03/2022 – 07/2023</div>
+            <div class="timeline-company">Restaurant by Eis-Villa</div>
+            <div class="timeline-role">Koch · Usedom</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">2018 – 2021</div>
+            <div class="timeline-company">Azuma Oriental Restaurant</div>
+            <div class="timeline-role">Koch Asiatisch & Japanisch · Odessa</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">2016 – 2018</div>
+            <div class="timeline-company">Rokka Japanese Steakhouse</div>
+            <div class="timeline-role">Koch · Robata · Grill · Odessa</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="section-label reveal" style="margin-top: 8px;">Sprachen</p>
+        <div class="lang-grid reveal" style="grid-template-columns: 1fr 1fr; margin-top: 16px;">
+          <div class="lang-card">
+            <div class="lang-name">Russisch</div>
+            <div class="lang-level">Muttersprache</div>
+            <div class="lang-bar"><div class="lang-fill" style="width:100%"></div></div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-name">Ukrainisch</div>
+            <div class="lang-level">Muttersprache</div>
+            <div class="lang-bar"><div class="lang-fill" style="width:100%"></div></div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-name">Englisch</div>
+            <div class="lang-level">B2 — Gut</div>
+            <div class="lang-bar"><div class="lang-fill" style="width:75%"></div></div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-name">Polnisch</div>
+            <div class="lang-level">B2 — Gut</div>
+            <div class="lang-bar"><div class="lang-fill" style="width:75%"></div></div>
+          </div>
+          <div class="lang-card" style="grid-column: span 2;">
+            <div class="lang-name">Deutsch</div>
+            <div class="lang-level">A2–B1 · aktiv verbessernd</div>
+            <div class="lang-bar"><div class="lang-fill" style="width:45%"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 48px;">
+          <p class="section-label reveal">Einsatzregionen</p>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;" class="reveal">
+            <div style="display:flex; justify-content:space-between; padding: 14px 18px; background: var(--card); font-size:13px;">
+              <span style="color:var(--white)">Niedersachsen</span>
+              <span style="color:var(--gold)">Schwerpunkt</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding: 14px 18px; background: var(--card); font-size:13px;">
+              <span style="color:var(--white)">Berlin & Brandenburg</span>
+              <span style="color:var(--gold)">Verfügbar</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding: 14px 18px; background: var(--card); font-size:13px;">
+              <span style="color:var(--white)">Bayern</span>
+              <span style="color:var(--gold)">Verfügbar</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding: 14px 18px; background: var(--card); font-size:13px;">
+              <span style="color:var(--white)">Deutschlandweit</span>
+              <span style="color:var(--muted)">auf Anfrage</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="buchen">
+  <div class="container">
+    <div class="booking-grid">
+      <div class="booking-info reveal">
+        <p class="section-label">Online Anfrage</p>
+        <h2 class="section-title">Mietkoch<br><em>anfragen</em></h2>
+        <p style="font-size:15px; color:var(--muted); line-height:1.8;">Füllen Sie das Formular aus — ich melde mich in der Regel innerhalb von 24 Stunden zurück. Kurzfristige Anfragen willkommen.</p>
+        <div class="booking-usp">
+          <div class="usp-item">
+            <div class="usp-num">01</div>
+            <div>
+              <div class="usp-text-title">Anfrage senden</div>
+              <div class="usp-text-desc">Geben Sie Ihre Daten, den gewünschten Einsatzzeitraum und die Art des Einsatzes an.</div>
+            </div>
+          </div>
+          <div class="usp-item">
+            <div class="usp-num">02</div>
+            <div>
+              <div class="usp-text-title">Kurze Abstimmung</div>
+              <div class="usp-text-desc">Telefonische Rücksprache zu Küche, Team und besonderen Anforderungen.</div>
+            </div>
+          </div>
+          <div class="usp-item">
+            <div class="usp-num">03</div>
+            <div>
+              <div class="usp-text-title">Einsatz bestätigt</div>
+              <div class="usp-text-desc">Konditionen und Zeitraum schriftlich bestätigt. Ich komme einsatzbereit zu Ihnen.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-form reveal">
+        <div class="form-box" id="formBox">
+          <div class="form-title">Einsatzanfrage stellen</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vorname *</label>
+              <input type="text" id="vorname" placeholder="Max" required>
+            </div>
+            <div class="form-group">
+              <label>Nachname *</label>
+              <input type="text" id="nachname" placeholder="Mustermann" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>E-Mail *</label>
+              <input type="email" id="email" placeholder="max@restaurant.de" required>
+            </div>
+            <div class="form-group">
+              <label>Telefon</label>
+              <input type="tel" id="telefon" placeholder="+49 ...">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Betrieb / Unternehmen *</label>
+            <input type="text" id="betrieb" placeholder="Restaurant, Hotel, Catering..." required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Einsatz ab *</label>
+              <input type="date" id="datumVon" required>
+            </div>
+            <div class="form-group">
+              <label>Einsatz bis</label>
+              <input type="date" id="datumBis">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Art des Einsatzes *</label>
+              <select id="einsatzArt" required>
+                <option value="" disabled selected>Bitte wählen</option>
+                <option>Tageseinsatz / Vertretung</option>
+                <option>Wocheneinsatz</option>
+                <option>Monatseinsatz / längerfristig</option>
+                <option>Event / Catering</option>
+                <option>Festanstellung</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Anzahl Gäste / Covers</label>
+              <select id="gaeste">
+                <option value="" disabled selected>Bitte wählen</option>
+                <option>Bis 50 Gäste</option>
+                <option>50 – 100 Gäste</option>
+                <option>100 – 200 Gäste</option>
+                <option>Über 200 Gäste</option>
+                <option>Nicht bekannt</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Küchenart / Schwerpunkt</label>
+            <select id="kueche">
+              <option value="" disabled selected>Bitte wählen</option>
+              <option>Deutsche / Bayerische Küche</option>
+              <option>Europäische Küche</option>
+              <option>Asiatische / Japanische Küche</option>
+              <option>Buffet / Catering</option>
+              <option>Gemischt / Offen</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Anmerkungen</label>
+            <textarea id="nachricht" placeholder="Besondere Anforderungen, Schichtzeiten, Küchengröße..."></textarea>
+          </div>
+          <button class="form-submit" onclick="submitForm()">Anfrage senden →</button>
+          <p class="form-note">Mit dem Absenden stimmen Sie der Kontaktaufnahme zu. Ihre Daten werden vertraulich behandelt und nicht weitergegeben.</p>
+        </div>
+
+        <div class="success-box" id="successBox">
+          <div class="success-icon">✅</div>
+          <div class="success-title">Anfrage erhalten!</div>
+          <p class="success-text">Vielen Dank für Ihre Anfrage.<br>Ich werde mich innerhalb von 24 Stunden bei Ihnen melden.<br><br>
+            <strong style="color:var(--white)">+49 1525 3418670</strong><br>
+            <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0d1dcd5dbc39ed1dcd5dbd89e8285f0d7ddd1d9dc9ed3dfdd">[email&#160;protected]</a></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">Oleksii Alekhneiko</div>
+      <div class="footer-text">Mietkoch · Postenchef · Koch auf Anfrage<br>Niedersachsen · Deutschlandweit</div>
+      <div class="footer-contact">
+        <a href="tel:+4915253418670">+49 1525 3418670</a><br>
+        <a href="/cdn-cgi/l/email-protection#e889848d839bc689848d8380c6dadda88f85898184c68b8785"><span class="__cf_email__" data-cfemail="bcddd0d9d7cf92ddd0d9d7d4928e89fcdbd1ddd5d092dfd3d1">[email&#160;protected]</span></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<!-- ═══════════════════════════════════════════════════════
+     EmailJS — SETUP (einmalig, kostenlos)
+     1. Registrieren: https://www.emailjs.com
+     2. Email Service verbinden (Gmail) → SERVICE_ID kopieren
+     3. Email Template erstellen → TEMPLATE_ID kopieren
+     4. Account → API Keys → Public Key kopieren
+     5. Die drei Werte unten einsetzen und fertig!
+     ═══════════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ─── EmailJS Konfiguration ───────────────────────────
+  const EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';   // ← aus emailjs.com / Account / API Keys
+  const EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';   // ← aus emailjs.com / Email Services
+  const EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';  // ← aus emailjs.com / Email Templates
+  // ────────────────────────────────────────────────────
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  reveals.forEach((el, i) => {
+    el.style.transitionDelay = (i % 4) * 0.08 + 's';
+    observer.observe(el);
+  });
+
+  // Datums-Minimum
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('datumVon').min = today;
+  document.getElementById('datumBis').min = today;
+
+  // Formular absenden
+  async function submitForm() {
+    const required = ['vorname','nachname','email','betrieb','datumVon','einsatzArt'];
+    let valid = true;
+    required.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.style.borderColor = '#c0392b';
+        el.style.boxShadow = '0 0 0 2px rgba(192,57,43,0.2)';
+        valid = false;
+        el.addEventListener('input', () => { el.style.borderColor = ''; el.style.boxShadow = ''; }, { once: true });
+      }
+    });
+    if (!valid) {
+      showToast('Bitte alle Pflichtfelder ausfüllen.', 'error');
+      return;
+    }
+
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Wird gesendet…';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    const templateParams = {
+      from_name:    document.getElementById('vorname').value.trim() + ' ' + document.getElementById('nachname').value.trim(),
+      from_email:   document.getElementById('email').value.trim(),
+      telefon:      document.getElementById('telefon').value.trim() || '—',
+      betrieb:      document.getElementById('betrieb').value.trim(),
+      datum_von:    document.getElementById('datumVon').value,
+      datum_bis:    document.getElementById('datumBis').value || '—',
+      einsatz_art:  document.getElementById('einsatzArt').value,
+      gaeste:       document.getElementById('gaeste').value || '—',
+      kueche:       document.getElementById('kueche').value || '—',
+      nachricht:    document.getElementById('nachricht').value.trim() || '—',
+      to_email:     'aleks.alekh.25@gmail.com',
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+      document.getElementById('formBox').style.display = 'none';
+      const sb = document.getElementById('successBox');
+      sb.style.display = 'block';
+      sb.style.animation = 'fadeUp 0.6s both';
+    } catch (err) {
+      console.error('EmailJS Fehler:', err);
+      btn.textContent = 'Anfrage senden →';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      // Fallback: mailto öffnen
+      const subject = encodeURIComponent('Mietkoch Anfrage – ' + templateParams.from_name);
+      const body = encodeURIComponent(
+        `Name: ${templateParams.from_name}\nEmail: ${templateParams.from_email}\nTelefon: ${templateParams.telefon}\nBetrieb: ${templateParams.betrieb}\nEinsatz von: ${templateParams.datum_von}\nEinsatz bis: ${templateParams.datum_bis}\nArt: ${templateParams.einsatz_art}\nGäste: ${templateParams.gaeste}\nKüche: ${templateParams.kueche}\nAnmerkungen: ${templateParams.nachricht}`
+      );
+      window.location.href = `mailto:aleks.alekh.25@gmail.com?subject=${subject}&body=${body}`;
+    }
+  }
+
+  function showToast(msg, type) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = `
+      position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+      background:${type==='error'?'#c0392b':'#27ae60'}; color:#fff;
+      padding:14px 28px; font-size:13px; letter-spacing:0.05em;
+      z-index:9999; animation:fadeUp 0.4s both;
+      font-family:'DM Sans',sans-serif;
+    `;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+</script>
+</body>
+</html>
