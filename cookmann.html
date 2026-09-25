@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cookmann — Private Chef · Catering · Kulinarik</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0a08;
+    --bg-2:#131210;
+    --ink:#f5f0e6;
+    --ink-dim:#a09a8c;
+    --mute:#615c52;
+    --line:#27241f;
+    --accent:#e7a23a;
+    --accent-2:#f7d27a;
+    --tomato:#d34f3b;
+    --basil:#7ea05a;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ─── PRELOADER ─── */
+  #preloader{
+    position:fixed;inset:0;z-index:9999;
+    background:var(--bg);
+    display:grid;place-items:center;
+    transition:opacity .8s ease, visibility .8s ease;
+  }
+  #preloader.done{opacity:0;visibility:hidden}
+  .pre-mark{
+    font-family:'Fraunces',serif;
+    font-size:64px;font-weight:300;font-style:italic;
+    color:var(--accent);
+    position:relative;
+    overflow:hidden;
+  }
+  .pre-mark::after{
+    content:'';position:absolute;left:0;bottom:-6px;
+    width:100%;height:1px;background:var(--accent);
+    transform-origin:left;
+    animation:preLine 1.4s cubic-bezier(.7,0,.3,1) forwards;
+  }
+  @keyframes preLine{
+    0%{transform:scaleX(0)}
+    60%{transform:scaleX(1)}
+    100%{transform:scaleX(1)}
+  }
+
+  /* ─── CURSOR ─── */
+  .cursor-dot{
+    position:fixed;top:0;left:0;
+    width:8px;height:8px;background:var(--accent);
+    border-radius:50%;pointer-events:none;
+    z-index:9000;mix-blend-mode:difference;
+    transform:translate(-50%,-50%);
+    transition:width .25s, height .25s, background .25s;
+  }
+  .cursor-dot.active{width:48px;height:48px;background:var(--accent-2);opacity:.4}
+
+  /* ─── NAV ─── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:80;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 48px;
+    transition:background .4s, padding .4s, border-color .4s;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled{
+    background:rgba(11,10,8,.85);
+    backdrop-filter:blur(14px);
+    padding:14px 48px;
+    border-bottom-color:var(--line);
+  }
+  .brand{
+    font-family:'Fraunces',serif;
+    font-size:26px;font-weight:400;letter-spacing:-.01em;
+    color:var(--ink);
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent);
+    animation:pulseDot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseDot{
+    0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(231,162,58,.7)}
+    50%{transform:scale(1.15);box-shadow:0 0 0 12px rgba(231,162,58,0)}
+  }
+  .nav-links{display:flex;gap:36px;list-style:none}
+  .nav-links a{
+    font-size:13px;color:var(--ink-dim);
+    letter-spacing:.08em;text-transform:lowercase;
+    position:relative;padding:6px 0;
+  }
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:0;
+    width:100%;height:1px;background:var(--accent);
+    transform:scaleX(0);transform-origin:right;
+    transition:transform .4s cubic-bezier(.7,0,.3,1);
+  }
+  .nav-links a:hover{color:var(--ink)}
+  .nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+  .nav-cta{
+    background:var(--accent);color:var(--bg);
+    padding:11px 22px;font-size:12px;font-weight:500;
+    letter-spacing:.06em;
+    border-radius:999px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:background .25s, transform .25s;
+  }
+  .nav-cta:hover{background:var(--accent-2);transform:translateY(-1px)}
+  .nav-cta .arr{transition:transform .25s}
+  .nav-cta:hover .arr{transform:translateX(3px)}
+
+  /* ─── HERO ─── */
+  #hero{
+    min-height:100vh;
+    position:relative;overflow:hidden;
+    display:grid;place-items:center;
+    padding:120px 24px 80px;
+  }
+  .hero-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(231,162,58,.10), transparent 60%),
+      radial-gradient(ellipse 60% 70% at 10% 90%, rgba(126,160,90,.06), transparent 60%);
+  }
+  .hero-noise{
+    position:absolute;inset:0;opacity:.05;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* floating ingredient orbs */
+  .orb{
+    position:absolute;border-radius:50%;
+    filter:blur(40px);opacity:.5;
+    animation:floatOrb 18s ease-in-out infinite;
+  }
+  .orb.o1{width:380px;height:380px;background:rgba(231,162,58,.4);top:15%;left:-100px}
+  .orb.o2{width:320px;height:320px;background:rgba(211,79,59,.25);bottom:5%;right:-80px;animation-delay:-6s}
+  .orb.o3{width:240px;height:240px;background:rgba(126,160,90,.25);top:55%;left:35%;animation-delay:-12s}
+  @keyframes floatOrb{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(40px,-30px) scale(1.08)}
+    66%{transform:translate(-30px,40px) scale(.95)}
+  }
+
+  /* steam */
+  .steam{
+    position:absolute;bottom:0;left:50%;
+    width:200px;height:300px;
+    transform:translateX(-50%);
+    pointer-events:none;opacity:.18;
+  }
+  .steam span{
+    position:absolute;bottom:0;left:50%;
+    width:80px;height:80px;
+    background:radial-gradient(circle, rgba(245,240,230,.8), transparent 70%);
+    border-radius:50%;
+    animation:rise 6s linear infinite;
+  }
+  .steam span:nth-child(2){left:30%;animation-delay:-1.5s;animation-duration:7s}
+  .steam span:nth-child(3){left:70%;animation-delay:-3s;animation-duration:5.5s}
+  .steam span:nth-child(4){left:45%;animation-delay:-4.5s;animation-duration:6.5s}
+  @keyframes rise{
+    0%{transform:translate(-50%,0) scale(.5);opacity:0}
+    20%{opacity:.8}
+    100%{transform:translate(-50%,-280px) scale(1.6);opacity:0}
+  }
+
+  .hero-content{
+    position:relative;z-index:3;
+    text-align:center;max-width:1100px;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--ink-dim);
+    padding:8px 16px;
+    border:1px solid var(--line);border-radius:999px;
+    margin-bottom:28px;
+    background:rgba(255,255,255,.02);
+  }
+  .eyebrow .live{
+    width:6px;height:6px;border-radius:50%;background:var(--basil);
+    box-shadow:0 0 0 0 rgba(126,160,90,.6);
+    animation:pulseDot 2s ease-in-out infinite;
+  }
+  .hero-title{
+    font-family:'Fraunces',serif;
+    font-size:clamp(56px,11vw,170px);
+    font-weight:300;line-height:.9;letter-spacing:-.04em;
+    color:var(--ink);
+  }
+  .hero-title .word{
+    display:inline-block;overflow:hidden;vertical-align:top;
+  }
+  .hero-title .word span{
+    display:inline-block;
+    transform:translateY(110%);
+    animation:rise-in 1.1s cubic-bezier(.6,0,.2,1) forwards;
+  }
+  .hero-title .word:nth-child(2) span{animation-delay:.15s}
+  .hero-title .word:nth-child(3) span{animation-delay:.3s}
+  @keyframes rise-in{to{transform:translateY(0)}}
+  .hero-title em{
+    font-style:italic;color:var(--accent);
+    font-weight:400;
+  }
+  .hero-sub{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(18px,2.2vw,26px);
+    color:var(--ink-dim);
+    margin:28px auto 44px;max-width:640px;line-height:1.5;
+    opacity:0;animation:fade-in 1s .9s forwards;
+  }
+  @keyframes fade-in{to{opacity:1}}
+  .hero-actions{
+    display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+    opacity:0;animation:fade-in 1s 1.1s forwards;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 30px;border-radius:999px;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    font-weight:500;transition:all .3s cubic-bezier(.7,0,.3,1);
+    cursor:pointer;border:none;
+  }
+  .btn-fill{background:var(--accent);color:var(--bg)}
+  .btn-fill:hover{background:var(--accent-2);transform:translateY(-2px);box-shadow:0 14px 40px rgba(231,162,58,.25)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn .arr{transition:transform .3s}
+  .btn:hover .arr{transform:translateX(4px)}
+
+  /* hero meta */
+  .hero-meta{
+    margin-top:80px;display:grid;
+    grid-template-columns:repeat(4,1fr);gap:24px;
+    max-width:840px;margin-left:auto;margin-right:auto;
+    opacity:0;animation:fade-in 1s 1.3s forwards;
+  }
+  .meta{text-align:center}
+  .meta-num{
+    font-family:'Fraunces',serif;
+    font-size:38px;font-weight:300;color:var(--accent-2);line-height:1;
+  }
+  .meta-label{font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;margin-top:8px}
+
+  /* ─── MARQUEE ─── */
+  .marquee{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;background:var(--bg-2);
+    padding:24px 0;
+  }
+  .marquee-track{
+    display:flex;gap:60px;width:max-content;
+    animation:scroll-x 30s linear infinite;
+  }
+  .marquee-item{
+    font-family:'Fraunces',serif;
+    font-size:clamp(28px,4vw,56px);
+    color:var(--ink);font-weight:300;letter-spacing:-.02em;
+    white-space:nowrap;display:flex;align-items:center;gap:60px;
+  }
+  .marquee-item em{font-style:italic;color:var(--accent)}
+  .marquee-item .dotx{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);
+  }
+  @keyframes scroll-x{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+
+  /* ─── SECTIONS ─── */
+  section{padding:140px 0;position:relative}
+  .container{max-width:1240px;margin:0 auto;padding:0 48px}
+  .section-head{margin-bottom:80px;max-width:880px}
+  .section-label{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:20px;
+  }
+  .section-label::before{
+    content:'';width:24px;height:1px;background:var(--accent);
+  }
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-size:clamp(40px,6vw,84px);
+    font-weight:300;line-height:1;letter-spacing:-.03em;
+    color:var(--ink);
+  }
+  .section-title em{font-style:italic;color:var(--accent)}
+  .section-lead{
+    font-size:18px;color:var(--ink-dim);line-height:1.6;
+    margin-top:24px;max-width:620px;
+  }
+
+  /* ─── SERVICES ─── */
+  #services{background:var(--bg)}
+  .services-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .service{
+    background:var(--bg);padding:48px 36px;
+    position:relative;overflow:hidden;
+    transition:background .4s;
+  }
+  .service::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(231,162,58,.08), transparent 50%);
+    opacity:0;transition:opacity .4s;
+  }
+  .service:hover::before{opacity:1}
+  .service:hover{background:var(--bg-2)}
+  .service-num{
+    font-family:'Fraunces',serif;
+    font-size:14px;color:var(--mute);
+    letter-spacing:.1em;
+  }
+  .service-icon{
+    width:56px;height:56px;
+    margin:24px 0 28px;
+    display:grid;place-items:center;
+    border:1px solid var(--line);border-radius:14px;
+    color:var(--accent);
+    transition:transform .5s cubic-bezier(.6,0,.2,1), border-color .3s;
+  }
+  .service:hover .service-icon{transform:rotate(-8deg) scale(1.08);border-color:var(--accent)}
+  .service-icon svg{width:26px;height:26px;stroke-width:1.4}
+  .service-title{
+    font-family:'Fraunces',serif;
+    font-size:30px;font-weight:400;color:var(--ink);
+    line-height:1.1;margin-bottom:14px;
+  }
+  .service-desc{
+    font-size:14px;color:var(--ink-dim);
+    line-height:1.7;margin-bottom:28px;
+  }
+  .service-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .service-tag{
+    font-size:11px;letter-spacing:.06em;
+    padding:6px 12px;border:1px solid var(--line);
+    border-radius:999px;color:var(--mute);
+  }
+  .service-link{
+    margin-top:32px;display:inline-flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);
+  }
+  .service-link .arr{transition:transform .3s}
+  .service:hover .service-link .arr{transform:translateX(6px)}
+
+  /* ─── MENU SHOWCASE ─── */
+  #menu{background:var(--bg-2);overflow:hidden}
+  .menu-strip{margin-bottom:60px}
+  .menu-list{
+    display:flex;flex-direction:column;
+  }
+  .dish{
+    display:grid;
+    grid-template-columns:80px 1fr auto 100px;
+    align-items:center;gap:32px;
+    padding:32px 0;
+    border-top:1px solid var(--line);
+    position:relative;cursor:pointer;
+    transition:padding .4s ease;
+  }
+  .dish:last-child{border-bottom:1px solid var(--line)}
+  .dish:hover{padding-left:24px}
+  .dish::before{
+    content:'';position:absolute;left:0;top:0;height:100%;
+    width:0;background:linear-gradient(90deg, rgba(231,162,58,.06), transparent 80%);
+    transition:width .5s cubic-bezier(.7,0,.3,1);
+    pointer-events:none;
+  }
+  .dish:hover::before{width:100%}
+  .dish-num{
+    font-family:'Fraunces',serif;font-style:italic;
+    font-size:18px;color:var(--mute);
+  }
+  .dish-name{
+    font-family:'Fraunces',serif;
+    font-size:clamp(24px,3.4vw,42px);
+    font-weight:300;color:var(--ink);
+    line-height:1.1;letter-spacing:-.02em;
+    display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  }
+  .dish-name em{font-style:italic;color:var(--accent)}
+  .dish-tag{
+    font-family:'Inter',sans-serif;
+    font-size:10px;color:var(--mute);letter-spacing:.18em;
+    text-transform:uppercase;
+    padding:4px 10px;border:1px solid var(--line);border-radius:999px;
+  }
+  .dish-meta{
+    font-size:13px;color:var(--ink-dim);
+    max-width:280px;line-height:1.5;
+  }
+  .dish-price{
+    font-family:'Fraunces',serif;font-size:22px;
+    color:var(--accent-2);text-align:right;
+  }
+  .dish-arr{
+    position:absolute;right:0;top:50%;
+    transform:translate(20px,-50%);
+    opacity:0;color:var(--accent);
+    transition:all .4s;
+  }
+  .dish:hover .dish-arr{transform:translate(0,-50%);opacity:1}
+
+  /* ─── PROCESS ─── */
+  #process{background:var(--bg)}
+  .process-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:32px;margin-top:40px;
+  }
+  .step{
+    position:relative;padding-top:40px;
+  }
+  .step::before{
+    content:'';position:absolute;top:0;left:0;
+    width:40px;height:1px;background:var(--accent);
+    transition:width .5s;
+  }
+  .step:hover::before{width:80px}
+  .step-num{
+    font-family:'Fraunces',serif;font-style:italic;
+    font-size:14px;color:var(--accent);letter-spacing:.08em;
+    margin-bottom:14px;
+  }
+  .step-title{
+    font-family:'Fraunces',serif;
+    font-size:28px;font-weight:400;color:var(--ink);
+    margin-bottom:14px;line-height:1.15;
+  }
+  .step-desc{font-size:14px;color:var(--ink-dim);line-height:1.7}
+
+  /* ─── PROOF / TESTIMONIALS ─── */
+  #proof{background:var(--bg-2)}
+  .testimonial{
+    max-width:980px;margin:0 auto;text-align:center;
+  }
+  .quote{
+    font-family:'Fraunces',serif;font-style:italic;
+    font-size:clamp(28px,4vw,46px);
+    line-height:1.3;color:var(--ink);font-weight:300;
+    letter-spacing:-.01em;
+  }
+  .quote em{color:var(--accent);font-style:italic}
+  .quote-author{
+    margin-top:36px;font-size:13px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-dim);
+  }
+  .quote-author strong{color:var(--ink);font-weight:500}
+
+  .logo-row{
+    margin-top:80px;display:grid;
+    grid-template-columns:repeat(5,1fr);gap:24px;
+    align-items:center;border-top:1px solid var(--line);
+    padding-top:48px;
+  }
+  .logo-row .logo-item{
+    text-align:center;
+    font-family:'Fraunces',serif;font-size:22px;
+    color:var(--mute);letter-spacing:-.01em;
+    transition:color .3s, transform .3s;
+  }
+  .logo-row .logo-item:hover{color:var(--ink);transform:translateY(-2px)}
+
+  /* ─── CTA ─── */
+  #cta{
+    background:var(--bg);overflow:hidden;
+    padding:160px 0;
+  }
+  .cta-box{
+    max-width:1100px;margin:0 auto;
+    background:linear-gradient(135deg, rgba(231,162,58,.08), rgba(211,79,59,.06));
+    border:1px solid var(--line);
+    border-radius:32px;
+    padding:80px 60px;
+    position:relative;overflow:hidden;
+    text-align:center;
+  }
+  .cta-box::before{
+    content:'';position:absolute;
+    top:-50%;left:-20%;
+    width:140%;height:200%;
+    background:radial-gradient(ellipse at center, rgba(231,162,58,.12), transparent 50%);
+    animation:rotate 30s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes rotate{to{transform:rotate(360deg)}}
+  .cta-title{
+    position:relative;
+    font-family:'Fraunces',serif;
+    font-size:clamp(40px,6vw,76px);font-weight:300;
+    line-height:1.05;letter-spacing:-.03em;
+    margin-bottom:24px;
+  }
+  .cta-title em{font-style:italic;color:var(--accent)}
+  .cta-sub{
+    position:relative;
+    font-size:18px;color:var(--ink-dim);
+    max-width:580px;margin:0 auto 40px;line-height:1.6;
+  }
+  .cta-actions{position:relative;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* ─── FOOTER ─── */
+  footer{
+    background:var(--bg);border-top:1px solid var(--line);
+    padding:80px 0 40px;
+  }
+  .footer-top{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:48px;padding-bottom:60px;border-bottom:1px solid var(--line);
+  }
+  .footer-brand-block .brand{font-size:36px;margin-bottom:20px}
+  .footer-brand-block p{
+    font-size:14px;color:var(--ink-dim);line-height:1.7;max-width:340px;
+  }
+  .footer-col h4{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--mute);margin-bottom:20px;font-weight:500;
+  }
+  .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .footer-col a{font-size:14px;color:var(--ink-dim);transition:color .2s}
+  .footer-col a:hover{color:var(--accent)}
+  .footer-bottom{
+    padding-top:32px;display:flex;justify-content:space-between;
+    flex-wrap:wrap;gap:16px;
+    font-size:12px;color:var(--mute);
+  }
+  .footer-bottom a:hover{color:var(--ink)}
+
+  /* ─── REVEAL ON SCROLL ─── */
+  .reveal{
+    opacity:0;transform:translateY(40px);
+    transition:opacity .9s cubic-bezier(.6,0,.2,1), transform .9s cubic-bezier(.6,0,.2,1);
+  }
+  .reveal.in{opacity:1;transform:none}
+  .reveal-d1{transition-delay:.08s}
+  .reveal-d2{transition-delay:.16s}
+  .reveal-d3{transition-delay:.24s}
+  .reveal-d4{transition-delay:.32s}
+
+  /* split text */
+  .split{display:inline-block}
+  .split .char{
+    display:inline-block;opacity:0;transform:translateY(60%);
+    transition:opacity .7s, transform .7s;
+  }
+  .split.in .char{opacity:1;transform:none}
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width:1000px){
+    .services-grid{grid-template-columns:1fr 1fr}
+    .process-grid{grid-template-columns:1fr 1fr}
+    .footer-top{grid-template-columns:1fr 1fr}
+    .logo-row{grid-template-columns:repeat(3,1fr);gap:32px}
+    .hero-meta{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:720px){
+    nav{padding:16px 22px}
+    nav.scrolled{padding:12px 22px}
+    .nav-links{display:none}
+    .container{padding:0 22px}
+    section{padding:96px 0}
+    .services-grid{grid-template-columns:1fr}
+    .process-grid{grid-template-columns:1fr}
+    .footer-top{grid-template-columns:1fr;gap:32px}
+    .dish{grid-template-columns:40px 1fr;gap:14px;padding:22px 0}
+    .dish-meta,.dish-price{grid-column:1 / -1;text-align:left;padding-left:54px}
+    .dish-price{margin-top:6px}
+    .cta-box{padding:56px 28px;border-radius:20px}
+    .cursor-dot{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-mark">cookmann.</div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursor"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="brand"><span class="dot"></span>cookmann</a>
+  <ul class="nav-links">
+    <li><a href="#services">leistungen</a></li>
+    <li><a href="#menu">menü</a></li>
+    <li><a href="#process">ablauf</a></li>
+    <li><a href="#proof">stimmen</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta" data-hover>
+    Tisch reservieren
+    <span class="arr">→</span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div class="hero-noise"></div>
+  <div class="steam">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="hero-content">
+    <div class="eyebrow">
+      <span class="live"></span>
+      <span>Private Chef · Catering · Pop-Up</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="word"><span>Küche,</span></span><br>
+      <span class="word"><span>die <em>Geschichten</em></span></span><br>
+      <span class="word"><span>erzählt.</span></span>
+    </h1>
+    <p class="hero-sub">
+      cookmann bringt die Restaurantküche zu Ihnen nach Hause —
+      saisonal, ehrlich, präzise. Jeder Gang ein kleines Ereignis.
+    </p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn btn-fill" data-hover>
+        Menü anfragen <span class="arr">→</span>
+      </a>
+      <a href="#menu" class="btn btn-ghost" data-hover>
+        Karte ansehen
+      </a>
+    </div>
+
+    <div class="hero-meta">
+      <div class="meta">
+        <div class="meta-num" data-count="15">0</div>
+        <div class="meta-label">Jahre Küche</div>
+      </div>
+      <div class="meta">
+        <div class="meta-num" data-count="420">0</div>
+        <div class="meta-label">Private Dinner</div>
+      </div>
+      <div class="meta">
+        <div class="meta-num" data-count="38">0</div>
+        <div class="meta-label">Saisonale Menüs</div>
+      </div>
+      <div class="meta">
+        <div class="meta-num" data-count="100" data-suffix="%">0</div>
+        <div class="meta-label">Frisch &amp; lokal</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <div class="marquee-item">
+      Saisonal <em>·</em> <span class="dotx"></span>
+      Regional <em>·</em> <span class="dotx"></span>
+      Handgemacht <em>·</em> <span class="dotx"></span>
+      <em>Mit Liebe</em> <em>·</em> <span class="dotx"></span>
+      Private Dining <em>·</em> <span class="dotx"></span>
+      Catering <em>·</em> <span class="dotx"></span>
+    </div>
+    <div class="marquee-item" aria-hidden="true">
+      Saisonal <em>·</em> <span class="dotx"></span>
+      Regional <em>·</em> <span class="dotx"></span>
+      Handgemacht <em>·</em> <span class="dotx"></span>
+      <em>Mit Liebe</em> <em>·</em> <span class="dotx"></span>
+      Private Dining <em>·</em> <span class="dotx"></span>
+      Catering <em>·</em> <span class="dotx"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Leistungen</div>
+      <h2 class="section-title">Was wir <em>kochen</em>.<br>Und wie wir es tun.</h2>
+      <p class="section-lead">
+        Vom intimen Dinner für vier bis zum Empfang für hundert Gäste —
+        cookmann bringt das ganze Repertoire an Ihren Tisch.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service reveal" data-tilt>
+        <div class="service-num">01 / Privat</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 11h18l-2 9H5l-2-9z"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 class="service-title">Private<br>Dinner</h3>
+        <p class="service-desc">
+          Mehrgang-Menü bei Ihnen zu Hause. Mise en place, Service am Pass,
+          alles aus einer Hand — wie im Restaurant, nur persönlicher.
+        </p>
+        <div class="service-tags">
+          <span class="service-tag">4–20 Gäste</span>
+          <span class="service-tag">5–8 Gänge</span>
+          <span class="service-tag">Wein-Pairing</span>
+        </div>
+        <a href="#cta" class="service-link" data-hover>Mehr erfahren <span class="arr">→</span></a>
+      </div>
+
+      <div class="service reveal reveal-d1" data-tilt>
+        <div class="service-num">02 / Catering</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        </div>
+        <h3 class="service-title">Event<br>Catering</h3>
+        <p class="service-desc">
+          Hochzeiten, Firmenfeiern, Empfänge. Live-Stationen, Buffet
+          oder Flying Service — perfekt abgestimmt auf Ihren Anlass.
+        </p>
+        <div class="service-tags">
+          <span class="service-tag">bis 200 Gäste</span>
+          <span class="service-tag">Live-Cooking</span>
+          <span class="service-tag">Crew inkl.</span>
+        </div>
+        <a href="#cta" class="service-link" data-hover>Mehr erfahren <span class="arr">→</span></a>
+      </div>
+
+      <div class="service reveal reveal-d2" data-tilt>
+        <div class="service-num">03 / Pop-Up</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 9l7-6 7 6v11H5V9z"/><path d="M9 20v-6h6v6"/></svg>
+        </div>
+        <h3 class="service-title">Pop-Up<br>&amp; Kollab</h3>
+        <p class="service-desc">
+          Saisonale Pop-Up-Dinner in Locations mit Charakter, Gast-Auftritte
+          und Kooperationen mit Küchen, die uns inspirieren.
+        </p>
+        <div class="service-tags">
+          <span class="service-tag">Limitierte Plätze</span>
+          <span class="service-tag">Tasting Menu</span>
+          <span class="service-tag">Newsletter</span>
+        </div>
+        <a href="#cta" class="service-link" data-hover>Mehr erfahren <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Aktuelles Menü · Frühsommer 26</div>
+      <h2 class="section-title">Karte des <em>Augenblicks</em>.</h2>
+      <p class="section-lead">
+        Sieben Gänge, die das Beste der Saison erzählen.
+        Wechselt alle vier Wochen — was reif ist, kommt auf den Teller.
+      </p>
+    </div>
+
+    <div class="menu-list">
+      <div class="dish reveal" data-hover>
+        <div class="dish-num">i.</div>
+        <div class="dish-name">
+          Erbsen &amp; <em>Bergkäse</em>
+          <span class="dish-tag">veg</span>
+        </div>
+        <div class="dish-meta">Marktfrische Erbsen, gereifter Bergkäse, Brunnenkresse, Zitronenöl.</div>
+        <div class="dish-price">14 €</div>
+        <span class="dish-arr">→</span>
+      </div>
+      <div class="dish reveal" data-hover>
+        <div class="dish-num">ii.</div>
+        <div class="dish-name">
+          Forelle <em>en bleu</em>
+          <span class="dish-tag">fisch</span>
+        </div>
+        <div class="dish-meta">Schwarzwald-Forelle, geräucherte Crème fraîche, Dill, gerösteter Roggen.</div>
+        <div class="dish-price">22 €</div>
+        <span class="dish-arr">→</span>
+      </div>
+      <div class="dish reveal" data-hover>
+        <div class="dish-num">iii.</div>
+        <div class="dish-name">
+          Spargel &amp; <em>brauner Butter</em>
+          <span class="dish-tag">saison</span>
+        </div>
+        <div class="dish-meta">Weißer Spargel sous-vide, Beurre noisette, Eigelb 64°, Sauerampfer.</div>
+        <div class="dish-price">26 €</div>
+        <span class="dish-arr">→</span>
+      </div>
+      <div class="dish reveal" data-hover>
+        <div class="dish-num">iv.</div>
+        <div class="dish-name">
+          Lamm aus der <em>Rhön</em>
+          <span class="dish-tag">main</span>
+        </div>
+        <div class="dish-meta">Lammrücken, Polenta-Crème, Junglauch, Jus mit fermentierten Pflaumen.</div>
+        <div class="dish-price">38 €</div>
+        <span class="dish-arr">→</span>
+      </div>
+      <div class="dish reveal" data-hover>
+        <div class="dish-num">v.</div>
+        <div class="dish-name">
+          Holunder, <em>Joghurt</em>, Sorrel
+          <span class="dish-tag">dessert</span>
+        </div>
+        <div class="dish-meta">Holunderblüten-Granité, Schafsjoghurt-Mousse, kandierter Sauerklee.</div>
+        <div class="dish-price">16 €</div>
+        <span class="dish-arr">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">So läuft's ab</div>
+      <h2 class="section-title">Vier Schritte<br>bis zum <em>Dinner</em>.</h2>
+    </div>
+    <div class="process-grid">
+      <div class="step reveal">
+        <div class="step-num">01 — Briefing</div>
+        <h3 class="step-title">Sie erzählen<br>vom Anlass.</h3>
+        <p class="step-desc">Wer kommt, was darf nicht fehlen, was lieben Sie — und was gar nicht. Ein lockerer Call genügt.</p>
+      </div>
+      <div class="step reveal reveal-d1">
+        <div class="step-num">02 — Menü</div>
+        <h3 class="step-title">Wir entwerfen<br>die Karte.</h3>
+        <p class="step-desc">Innerhalb von drei Tagen erhalten Sie einen Menüvorschlag mit Pairings und transparenter Kalkulation.</p>
+      </div>
+      <div class="step reveal reveal-d2">
+        <div class="step-num">03 — Einkauf</div>
+        <h3 class="step-title">Vom Markt<br>auf den Teller.</h3>
+        <p class="step-desc">Wir kaufen am Tag des Events bei Erzeugern, mit denen wir seit Jahren arbeiten — nichts liegt.</p>
+      </div>
+      <div class="step reveal reveal-d3">
+        <div class="step-num">04 — Service</div>
+        <h3 class="step-title">Wir kommen.<br>Sie genießen.</h3>
+        <p class="step-desc">Aufbau, Kochen, Service, Abbau. Die Küche bleibt sauber, der Abend bleibt in Erinnerung.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section id="proof">
+  <div class="container">
+    <div class="testimonial reveal">
+      <p class="quote">
+        „Das war kein Catering — das war ein <em>Abend</em>, über den
+        wir noch in einem Jahr sprechen werden. Jeder Gang saß,
+        jede Geste auch."
+      </p>
+      <div class="quote-author"><strong>Lisa &amp; Mark</strong> · Hochzeit, Schloss Heinsheim</div>
+    </div>
+
+    <div class="logo-row">
+      <div class="logo-item reveal">VOGUE</div>
+      <div class="logo-item reveal reveal-d1">FAZ</div>
+      <div class="logo-item reveal reveal-d2">Mixology</div>
+      <div class="logo-item reveal reveal-d3">Falstaff</div>
+      <div class="logo-item reveal reveal-d4">Slow Food</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2 class="cta-title">Lassen Sie uns<br><em>kochen</em>.</h2>
+      <p class="cta-sub">
+        Sagen Sie uns Datum, Anlass und Gästezahl — der Rest ist
+        unser Job. Innerhalb von 24&nbsp;Stunden hören Sie von uns.
+      </p>
+      <div class="cta-actions">
+        <a href="mailto:hello@cookmann.de" class="btn btn-fill" data-hover>
+          hello@cookmann.de <span class="arr">→</span>
+        </a>
+        <a href="tel:+491700000000" class="btn btn-ghost" data-hover>
+          +49 170 000 000 0
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand-block">
+        <a href="#" class="brand"><span class="dot"></span>cookmann</a>
+        <p>Private Chef &amp; Catering aus Frankfurt. Saisonal, regional, mit einem Hang zur Präzision. Verfügbar in DACH und auf Anfrage europaweit.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Service</h4>
+        <ul>
+          <li><a href="#services">Private Dinner</a></li>
+          <li><a href="#services">Event Catering</a></li>
+          <li><a href="#services">Pop-Up</a></li>
+          <li><a href="#menu">Aktuelles Menü</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <ul>
+          <li><a href="#">Über uns</a></li>
+          <li><a href="#">Presse</a></li>
+          <li><a href="#">Newsletter</a></li>
+          <li><a href="#">Karriere</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="mailto:hello@cookmann.de">hello@cookmann.de</a></li>
+          <li><a href="tel:+491700000000">+49 170 000 000 0</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 cookmann. Alle Rechte vorbehalten.</span>
+      <span><a href="#">Impressum</a> · <a href="#">Datenschutz</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // PRELOADER
+  window.addEventListener('load', () => {
+    setTimeout(()=>document.getElementById('preloader').classList.add('done'), 900);
+  });
+
+  // NAV scroll
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', scrollY > 30);
+  });
+
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  if (matchMedia('(pointer:fine)').matches) {
+    let cx=0,cy=0,tx=0,ty=0;
+    addEventListener('mousemove', e=>{tx=e.clientX;ty=e.clientY});
+    (function loop(){
+      cx += (tx-cx)*.18; cy += (ty-cy)*.18;
+      cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('[data-hover], a, button').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>cursor.classList.add('active'));
+      el.addEventListener('mouseleave', ()=>cursor.classList.remove('active'));
+    });
+  } else {
+    cursor.style.display='none';
+  }
+
+  // REVEAL on scroll
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // COUNTERS
+  const counters = document.querySelectorAll('[data-count]');
+  const cio = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
+      const dur = 1600;
+      const start = performance.now();
+      (function tick(now){
+        const t = Math.min(1, (now-start)/dur);
+        const eased = 1 - Math.pow(1-t, 3);
+        el.textContent = Math.round(target*eased) + suffix;
+        if (t<1) requestAnimationFrame(tick);
+      })(start);
+      cio.unobserve(el);
+    });
+  }, {threshold:.4});
+  counters.forEach(c=>cio.observe(c));
+
+  // SPLIT char animation for section titles
+  document.querySelectorAll('.section-title, .cta-title').forEach(el=>{
+    const text = el.innerHTML;
+    // skip — keep simple to avoid breaking <em>/<br>
+  });
+
+  // TILT effect for service cards (light)
+  document.querySelectorAll('[data-tilt]').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const mx = ((e.clientX - r.left)/r.width)*100;
+      const my = ((e.clientY - r.top)/r.height)*100;
+      card.style.setProperty('--mx', mx+'%');
+      card.style.setProperty('--my', my+'%');
+    });
+  });
+
+  // MENU dish hover — small parallax of name
+  document.querySelectorAll('.dish').forEach(d=>{
+    d.addEventListener('mousemove', e=>{
+      const r = d.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2)/r.width;
+      const name = d.querySelector('.dish-name');
+      name.style.transform = `translateX(${x*8}px)`;
+    });
+    d.addEventListener('mouseleave', ()=>{
+      d.querySelector('.dish-name').style.transform = '';
+    });
+  });
+</script>
+
+</body>
+</html>
